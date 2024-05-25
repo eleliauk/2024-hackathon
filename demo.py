@@ -72,7 +72,6 @@ obstacle_hit_image3 = pygame.image.load('img/dog_green_die.png').convert_alpha()
 obstacle_image3 = pygame.transform.scale(obstacle_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 obstacle_hit_image3 = pygame.transform.scale(obstacle_hit_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 
-# 两个按键状态
 isKey1 = False
 isKey2 = False
 isKey3 = False
@@ -90,14 +89,12 @@ def create_obstacle():
         return {'rect': rect, 'image': obstacle_image3, 'note': note}
 
 
-# 主函数，用于启动游戏
 def main():
-    global ball_x, ball_y, ball_dx, ball_dy, isKey1, isKey2, isKey3  # 声明全局变量
+    global ball_x, ball_y, ball_dx, ball_dy, isKey1, isKey2, isKey3
 
     obstacles = [create_obstacle()]
     knocked_back_obstacles = []
 
-    # 游戏主循环
     while True:
 
         isPress = False
