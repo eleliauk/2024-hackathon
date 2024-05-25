@@ -1,4 +1,3 @@
-# main.py
 import pygame
 import sys
 from start_screen import StartScreen

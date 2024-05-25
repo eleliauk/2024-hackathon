@@ -3,8 +3,8 @@ import sys
 import random
 
 # 设置窗口的大小
-WINDOW_WIDTH = 600
-WINDOW_HEIGHT = 400
+WINDOW_WIDTH = 1200
+WINDOW_HEIGHT = 800
 
 # 设置球的大小
 BALL_DIAMETER = 15
@@ -97,7 +97,6 @@ def main():
             # 碰撞检测
             if obstacle.colliderect(
                     pygame.Rect(ball_x - BALL_RADIUS, ball_y - BALL_RADIUS, BALL_DIAMETER, BALL_DIAMETER)):
-                # 障碍物被撞飞
                 knocked_back_obstacles.append([obstacle, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y])
                 obstacles.remove(obstacle)
 
@@ -106,10 +105,10 @@ def main():
             obstacle, knockback_x, knockback_y = obstacle_data
             obstacle.x += knockback_x
             obstacle.y += knockback_y
-            obstacle_data[2] += GRAVITY  # 更新垂直速度
+            obstacle_data[2] += GRAVITY
 
             # 如果障碍物离开屏幕，则移除
-            if (obstacle.x + OBSTACLE_WIDTH < 0 or obstacle.y > WINDOW_HEIGHT):
+            if obstacle.x + OBSTACLE_WIDTH < 0 or obstacle.y > WINDOW_HEIGHT:
                 knocked_back_obstacles.remove(obstacle_data)
 
         # 生成新障碍物
@@ -138,6 +137,5 @@ def main():
         pygame.time.Clock().tick(60)
 
 
-# 确保可以直接运行 demo.py 作为主程序
 if __name__ == "__main__":
     main()
