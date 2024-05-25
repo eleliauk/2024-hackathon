@@ -8,7 +8,7 @@ def main():
     pygame.init()
 
     # 设置窗口大小
-    screen_width, screen_height = 1000, 800
+    screen_width, screen_height = 1200, 800
     screen = pygame.display.set_mode((screen_width, screen_height))
     pygame.display.set_caption('游戏开始界面')
 
