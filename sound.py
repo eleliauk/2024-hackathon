@@ -94,8 +94,11 @@ class sound:
             if os.path.exists(fileName):
                 if town == 2:
                     s = self.keyDict2[pitch]
-                pygame.mixer.music.load(fileName)
-                pygame.mixer.music.play()
+                #使用一个新的线程，使用pygame.mixer.music播放音频
+                sound = pygame.mixer.Sound(fileName)
+                sound.play()
+
+
 
     def playSoundScape(self, key):
         fileName = "./audios/" + str(self.keyDict[key]) + ".wav"
