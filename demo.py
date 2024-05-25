@@ -67,9 +67,9 @@ def create_obstacle():
     return {'rect': rect, 'image': obstacle_image}
 
 
-# 主函数，用于启动游戏
+
 def main():
-    global ball_x, ball_y, ball_dx, ball_dy  # 声明全局变量
+    global ball_x, ball_y, ball_dx, ball_dy
 
     obstacles = [create_obstacle()]
     knocked_back_obstacles = []
