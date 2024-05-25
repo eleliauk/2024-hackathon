@@ -103,8 +103,8 @@ class sound:
         if os.path.exists(fileName):
             # self.pressDict[key] = True
             # threading.Thread(target=self.play, args=(fileName, key)).start()
-            pygame.mixer.music.load(fileName)
-            pygame.mixer.music.play()
+            sound1 = pygame.mixer.Sound(fileName)
+            sound1.play()
 
     def stop(self):
         pygame.mixer.music.stop()

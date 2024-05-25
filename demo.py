@@ -1,3 +1,5 @@
+import time
+import Decoder
 import pygame
 import sys
 import random
@@ -101,26 +103,43 @@ isKey1 = False
 isKey2 = False
 isKey3 = False
 
+# 按键队列
+keyQueue = Decoder.Decoder("./scores/in.info").get_beat()
 
+TIMER_EVENT = pygame.USEREVENT + 1
+pygame.time.set_timer(TIMER_EVENT, 150)  # 200毫秒
 
 # 生成障碍物
-def create_obstacle():
+def create_obstacle(num):
+    notes = keyQueue[num]
     rect = pygame.Rect(WINDOW_WIDTH, WINDOW_HEIGHT / 2 - TRACK_HEIGHT / 2, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
-    note = random.randint(1, 3)
-    if note == 1:
-        return {'rect': rect, 'image': obstacle_image1, 'note': note}
-    elif note == 2:
-        return {'rect': rect, 'image': obstacle_image2, 'note': note}
+    level = 0
+    for note in notes:
+        lev = note[0] + 12 * note[1]
+        lev //= 12
+        lev += 1
+        if lev > level:
+            level = lev
+
+    print(level)
+    if level == 1:
+        return {'rect': rect, 'image': obstacle_image1, 'level': level,'notes':notes}
+    elif level == 2:
+        return {'rect': rect, 'image': obstacle_image2, 'level': level,'notes':notes}
     else:
-        return {'rect': rect, 'image': obstacle_image3, 'note': note}
+        return {'rect': rect, 'image': obstacle_image3, 'level': level,'notes':notes}
 
 
 # 主函数，用于启动游戏
 def main():
     global ball_x, ball_y, ball_dx, ball_dy, isKey1, isKey2, isKey3  # 声明全局变量
 
-    obstacles = [create_obstacle()]
+    obstacles = []
     knocked_back_obstacles = []
+
+    #时间戳
+    numOfNote = 0
+
 
     # 游戏主循环
     while True:
@@ -138,11 +157,11 @@ def main():
                     isKey2 = True
                 elif event.key == pygame.K_3:
                     isKey3 = True
-                elif event.key == pygame.K_UP:
-                    if isKey1 and not isKey2 and not isKey3:
+                elif event.key == pygame.K_SPACE:
+                    if isKey1:
                         # 移动障碍物
                         for obstacle in obstacles[:]:
-                            if obstacle['note'] == 1:
+                            if obstacle['level'] == 1:
                                 rect = obstacle['rect']
                                 # 碰撞检测
                                 if rect.colliderect(
@@ -152,11 +171,13 @@ def main():
                                         [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y,
                                          obstacle_hit_image1])
                                     obstacles.remove(obstacle)
+                                    for note in obstacle['notes']:
+                                        sound.playSoundScapebyName(note[0],note[1])
                                     break
-                    elif isKey2 and not isKey1 and not isKey3:
+                    if isKey2:
                         # 移动障碍物
                         for obstacle in obstacles[:]:
-                            if obstacle['note'] == 2:
+                            if obstacle['level'] == 2:
                                 rect = obstacle['rect']
                                 # 碰撞检测
                                 if rect.colliderect(
@@ -166,12 +187,14 @@ def main():
                                         [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y,
                                          obstacle_hit_image2])
                                     obstacles.remove(obstacle)
+                                    for note in obstacle['notes']:
+                                        sound.playSoundScapebyName(note[0],note[1])
                                     break
 
-                    elif isKey3 and not isKey2 and not isKey1:
+                    if isKey3:
                         # 移动障碍物
                         for obstacle in obstacles[:]:
-                            if obstacle['note'] == 3:
+                            if obstacle['level'] == 3:
                                 rect = obstacle['rect']
                                 # 碰撞检测
                                 if rect.colliderect(
@@ -181,11 +204,9 @@ def main():
                                         [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y,
                                          obstacle_hit_image3])
                                     obstacles.remove(obstacle)
+                                    for note in obstacle['notes']:
+                                        sound.playSoundScapebyName(note[0],note[1])
                                     break
-
-
-
-
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_1:
                     isKey1 = False
@@ -193,6 +214,11 @@ def main():
                     isKey2 = False
                 elif event.key == pygame.K_3:
                     isKey3 = False
+            elif event.type == TIMER_EVENT:
+                if numOfNote < len(keyQueue):
+                    if (len(keyQueue[numOfNote]) != 0):
+                        obstacles.append(create_obstacle(numOfNote))
+                    numOfNote += 1
 
         # 移动障碍物
         for obstacle in obstacles[:]:
@@ -215,8 +241,9 @@ def main():
                 knocked_back_obstacles.remove(obstacle_data)
 
         # 生成新障碍物
-        if random.randint(1, 60) == 1:  # 每隔一段时间生成一个新的障碍物
-            obstacles.append(create_obstacle())
+        # if random.randint(1, 60) == 1:  # 每隔一段时间生成一个新的障碍物
+        #     obstacles.append(create_obstacle())
+
 
         # 清屏
         screen.blit(background_image, (0, 0))
