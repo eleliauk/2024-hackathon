@@ -23,8 +23,7 @@ OBSTACLE_WIDTH = 70
 OBSTACLE_HEIGHT = 60  # 增加障碍物的高度
 OBSTACLE_SPEED = 4
 OBSTACLE_KNOCKBACK_SPEED_X = -2  # 障碍物被撞飞的水平速度
-OBSTACLE_KNOCKBACK_SPEED_Y = -5
-
+OBSTACLE_KNOCKBACK_SPEED_Y = -5  # 障碍物被撞飞的初始垂直速度
 GRAVITY = 1  # 重力加速度
 
 # 轨道数量
@@ -57,13 +56,13 @@ ball_dx = 0
 ball_dy = 0
 
 # 加载障碍物图片
-obstacle_image1 = pygame.image.load('img/dog_blue.png').convert_alpha()
-obstacle_hit_image1 = pygame.image.load('img/dog_blue_die.png').convert_alpha()
+obstacle_image1 = pygame.image.load('img/dog_red.png').convert_alpha()
+obstacle_hit_image1 = pygame.image.load('img/dog_red_die.png').convert_alpha()
 obstacle_image1 = pygame.transform.scale(obstacle_image1, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 obstacle_hit_image1 = pygame.transform.scale(obstacle_hit_image1, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 
-obstacle_image2 = pygame.image.load('img/dog_red.png').convert_alpha()
-obstacle_hit_image2 = pygame.image.load('img/dog_red_die.png').convert_alpha()
+obstacle_image2 = pygame.image.load('img/dog_blue.png').convert_alpha()
+obstacle_hit_image2 = pygame.image.load('img/dog_blue_die.png').convert_alpha()
 obstacle_image2 = pygame.transform.scale(obstacle_image2, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 obstacle_hit_image2 = pygame.transform.scale(obstacle_hit_image2, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 
@@ -72,9 +71,36 @@ obstacle_hit_image3 = pygame.image.load('img/dog_green_die.png').convert_alpha()
 obstacle_image3 = pygame.transform.scale(obstacle_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 obstacle_hit_image3 = pygame.transform.scale(obstacle_hit_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 
+# 加载提示按钮图片
+button1Up_image = pygame.image.load('img/button1_up.png').convert_alpha()
+button1Down_image = pygame.image.load('img/button1_down.png').convert_alpha()
+button2Up_image = pygame.image.load('img/button2_up.png').convert_alpha()
+button2Down_image = pygame.image.load('img/button2_down.png').convert_alpha()
+button3Up_image = pygame.image.load('img/button3_up.png').convert_alpha()
+button3Down_image = pygame.image.load('img/button3_down.png').convert_alpha()
+
+# 加载提示按钮的大小
+BUTTON_WIDTH = 50
+BUTTON_HEIGHT = 80
+
+# 加载提示按钮图片
+button1Up_image = pygame.transform.scale(button1Up_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+button1Down_image = pygame.transform.scale(button1Down_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+button2Up_image = pygame.transform.scale(button2Up_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+button2Down_image = pygame.transform.scale(button2Down_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+button3Up_image = pygame.transform.scale(button3Up_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+button3Down_image = pygame.transform.scale(button3Down_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+
+button1X = 35+WINDOW_WIDTH/2 - BUTTON_WIDTH/2*4
+button2X = 35+WINDOW_WIDTH/2 - BUTTON_WIDTH/2
+button3X = 35+WINDOW_WIDTH/2 + BUTTON_WIDTH/2 * 2
+buttonY = WINDOW_HEIGHT/2+100
+
+# 两个按键状态
 isKey1 = False
 isKey2 = False
 isKey3 = False
+
 
 
 # 生成障碍物
@@ -89,12 +115,14 @@ def create_obstacle():
         return {'rect': rect, 'image': obstacle_image3, 'note': note}
 
 
+# 主函数，用于启动游戏
 def main():
-    global ball_x, ball_y, ball_dx, ball_dy, isKey1, isKey2, isKey3
+    global ball_x, ball_y, ball_dx, ball_dy, isKey1, isKey2, isKey3  # 声明全局变量
 
     obstacles = [create_obstacle()]
     knocked_back_obstacles = []
 
+    # 游戏主循环
     while True:
 
         isPress = False
