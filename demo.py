@@ -21,7 +21,7 @@ BALL_RADIUS = BALL_DIAMETER // 1.2
 # 设置障碍物的大小和速度
 OBSTACLE_WIDTH = 70
 OBSTACLE_HEIGHT = 60  # 增加障碍物的高度
-OBSTACLE_SPEED = 5
+OBSTACLE_SPEED = 4
 OBSTACLE_KNOCKBACK_SPEED_X = -2  # 障碍物被撞飞的水平速度
 OBSTACLE_KNOCKBACK_SPEED_Y = -5  # 障碍物被撞飞的初始垂直速度
 GRAVITY = 1  # 重力加速度
@@ -56,16 +56,36 @@ ball_dx = 0
 ball_dy = 0
 
 # 加载障碍物图片
-obstacle_image = pygame.image.load('img/dog.png').convert_alpha()
-obstacle_hit_image = pygame.image.load('img/dog-dead.png').convert_alpha()
-obstacle_image = pygame.transform.scale(obstacle_image, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
-obstacle_hit_image = pygame.transform.scale(obstacle_hit_image, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+obstacle_image1 = pygame.image.load('img/dog_blue.png').convert_alpha()
+obstacle_hit_image1 = pygame.image.load('img/dog_blue_die.png').convert_alpha()
+obstacle_image1 = pygame.transform.scale(obstacle_image1, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+obstacle_hit_image1 = pygame.transform.scale(obstacle_hit_image1, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+
+obstacle_image2 = pygame.image.load('img/dog_red.png').convert_alpha()
+obstacle_hit_image2 = pygame.image.load('img/dog_red_die.png').convert_alpha()
+obstacle_image2 = pygame.transform.scale(obstacle_image2, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+obstacle_hit_image2 = pygame.transform.scale(obstacle_hit_image2, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+
+obstacle_image3 = pygame.image.load('img/dog_green.png').convert_alpha()
+obstacle_hit_image3 = pygame.image.load('img/dog_green_die.png').convert_alpha()
+obstacle_image3 = pygame.transform.scale(obstacle_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+obstacle_hit_image3 = pygame.transform.scale(obstacle_hit_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
+
+#两个按键状态
+isKeyQ = False
+isKeyA = False
 
 
 # 生成障碍物
 def create_obstacle():
-    rect = pygame.Rect(WINDOW_WIDTH,10+ WINDOW_HEIGHT/2-(TRACK_NUM*TRACK_HEIGHT)/2+random.randint(0,TRACK_NUM-1)*TRACK_HEIGHT, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
-    return {'rect': rect, 'image': obstacle_image}
+    rect = pygame.Rect(WINDOW_WIDTH,WINDOW_HEIGHT/2-TRACK_HEIGHT/2, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
+    note = random.randint(1, 3)
+    if note == 1:
+        return {'rect': rect, 'image': obstacle_image1, 'note':note}
+    elif note == 2:
+        return {'rect': rect, 'image': obstacle_image2, 'note':note}
+    else:
+        return {'rect': rect, 'image': obstacle_image3, 'note':note}
 
 
 # 主函数，用于启动游戏
@@ -85,21 +105,57 @@ def main():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                key = event.key
-                num = key - 48
+                if event.key == pygame.K_q:
+                    isKeyQ = True
+                elif event.key == pygame.K_a:
+                    isKeyA = True
+                elif event.key == pygame.K_UP:
+                    if isKeyQ and not isKeyA:
+                        # 移动障碍物
+                        for obstacle in obstacles[:]:
+                            if obstacle['note'] == 1:
+                                rect = obstacle['rect']
+                                # 碰撞检测
+                                if rect.colliderect(pygame.Rect(ball_x - BALL_RADIUS, 0, BALL_DIAMETER * 2, WINDOW_HEIGHT)):
+                                    # 障碍物被撞飞
+                                    knocked_back_obstacles.append(
+                                        [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y, obstacle_hit_image1])
+                                    obstacles.remove(obstacle)
+                                    break
+                    elif isKeyA and not isKeyQ:
+                        # 移动障碍物
+                        for obstacle in obstacles[:]:
+                            if obstacle['note'] == 2:
+                                rect = obstacle['rect']
+                                # 碰撞检测
+                                if rect.colliderect(pygame.Rect(ball_x - BALL_RADIUS, 0, BALL_DIAMETER * 2, WINDOW_HEIGHT)):
+                                    # 障碍物被撞飞
+                                    knocked_back_obstacles.append(
+                                        [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y, obstacle_hit_image2])
+                                    obstacles.remove(obstacle)
+                                    break
 
-                # 移动障碍物
-                for obstacle in obstacles[:]:
-                    rect = obstacle['rect']
-                    # 碰撞检测
-                    if rect.colliderect(
-                            pygame.Rect(ball_x - BALL_RADIUS, 10+WINDOW_HEIGHT/2-(TRACK_NUM*TRACK_HEIGHT)/2+TRACK_HEIGHT/2+TRACK_HEIGHT*(num-1), BALL_DIAMETER * 2,10)):
-                        # 障碍物被撞飞
-                        # pygame.mixer.music.play(0)
-                        sound.playSoundScape(key)
-                        knocked_back_obstacles.append([rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y, obstacle_hit_image])
-                        obstacles.remove(obstacle)
-                        break
+                    else:
+                        # 移动障碍物
+                        for obstacle in obstacles[:]:
+                            if obstacle['note'] == 3:
+                                rect = obstacle['rect']
+                                # 碰撞检测
+                                if rect.colliderect(pygame.Rect(ball_x - BALL_RADIUS, 0, BALL_DIAMETER * 2, WINDOW_HEIGHT)):
+                                    # 障碍物被撞飞
+                                    knocked_back_obstacles.append(
+                                        [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y, obstacle_hit_image3])
+                                    obstacles.remove(obstacle)
+                                    break
+
+
+
+
+            elif event.type == pygame.KEYUP:
+                if event.key == pygame.K_q:
+                    isKeyQ = False
+                elif event.key == pygame.K_a:
+                    isKeyA = False
 
         # 移动障碍物
         for obstacle in obstacles[:]:
@@ -122,7 +178,7 @@ def main():
                 knocked_back_obstacles.remove(obstacle_data)
 
         # 生成新障碍物
-        if random.randint(1, 30) == 1:  # 每隔一段时间生成一个新的障碍物
+        if random.randint(1, 60) == 1:  # 每隔一段时间生成一个新的障碍物
             obstacles.append(create_obstacle())
 
         # 清屏
