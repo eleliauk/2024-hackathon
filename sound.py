@@ -50,12 +50,37 @@ class sound:
         pygame.K_b: 'c5'
 
     }
+    keyDict2 = {
+        0: 'c',
+        1: 'c#',
+        2: 'd',
+        3: 'd#',
+        4: 'e',
+        5: 'f',
+        6: 'f#',
+        7: 'g',
+        8: 'g#',
+        9: 'a',
+        10: 'a#',
+        11: 'b'
+    }
+
+    def playSoundScapebyName(self, pitch, town):
+        s = self.keyDict2[pitch]
+        if town == 1:
+            if s[-1] == '#':
+                s = s[:-1] + '4#'
+        fileName = "./audios/" + s + ".wav"
+        if os.path.exists(fileName):
+            self.pressDict[s] = True
+            threading.Thread(target=self.play, args=(fileName, s)).start()
 
     def playSoundScape(self, key):
         fileName = "./audios/" + str(self.keyDict[key]) + ".wav"
         if os.path.exists(fileName):
             self.pressDict[key] = True
             threading.Thread(target=self.play, args=(fileName, key)).start()
+
     def play(self, path, key):
         CHUNK = 1024
         # 从目录中读取语音
@@ -69,7 +94,7 @@ class sound:
         FORMAT = p.get_format_from_width(wf.getsampwidth())
         CHANNELS = wf.getnchannels()
         RATE = wf.getframerate()
-        print(self.keyDict[key], end=' ')
+        # print(self.keyDict[key], end=' ')
         sys.stdout.flush()
         # 打开音频流， output=True表示音频输出
 
@@ -86,17 +111,12 @@ class sound:
             if not self.pressDict[key]:
                 break
 
-
-
-
 # pygame.init()
 # p = pyaudio.PyAudio()
 
 # screen = pygame.display.set_mode((500, 304))
 # pygame.display.set_caption('My-Piano')  # 设置窗口标题
 # pygame.display.update()  # 显示内容
-
-
 
 
 # while True:
@@ -119,9 +139,3 @@ class sound:
 #             # time.sleep(0.5)
 #             key = event.key
 #             pressDict[key] = False
-
-
-
-
-
-
