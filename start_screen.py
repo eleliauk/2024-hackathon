@@ -23,7 +23,7 @@ class StartScreen:
         self.screen.blit(self.background_image, (0, 0))
 
         # Draw title
-        title_text = self.font.render('Start', True, pygame.Color('white'))
+        title_text = self.font.render('启动', True, pygame.Color('white'))
         title_rect = title_text.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2 - 100))
         self.screen.blit(title_text, title_rect)
 

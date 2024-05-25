@@ -28,3 +28,10 @@ class Decoder:
                     nts[i - t].append(list(map(int, note.split(","))))
         self.beat.append(nts)
         return t + 17
+
+    def get_beat(self):
+        ans = []
+        for x in self.beat:
+            for j in x:
+                ans.append(j)
+        return ans
