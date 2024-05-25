@@ -6,8 +6,9 @@ import sound
 # 音频
 sound = sound.sound()
 
-pygame.mixer.init()
-pygame.mixer.music.load('audios/c.wav')
+# pygame.mixer.init()
+# pygame.mixer.music.load('audios/first.wav')
+# pygame.mixer.music.play(0)
 
 # 设置窗口的大小
 WINDOW_WIDTH = 1200
@@ -27,6 +28,7 @@ GRAVITY = 1  # 重力加速度
 
 # 轨道数量
 TRACK_NUM = 3
+TRACK_HEIGHT = 90
 
 # 颜色定义
 BLACK = (0, 0, 0)
@@ -48,7 +50,7 @@ background_image = pygame.image.load('img/background.png').convert()
 background_image = pygame.transform.scale(background_image, (WINDOW_WIDTH, WINDOW_HEIGHT))
 
 # 初始化球的位置和速度
-ball_x = WINDOW_WIDTH // 4
+ball_x = WINDOW_WIDTH // 1.88
 ball_y = WINDOW_HEIGHT // 2
 ball_dx = 0
 ball_dy = 0
@@ -62,14 +64,13 @@ obstacle_hit_image = pygame.transform.scale(obstacle_hit_image, (OBSTACLE_WIDTH,
 
 # 生成障碍物
 def create_obstacle():
-    rect = pygame.Rect(WINDOW_WIDTH, random.randint(0, TRACK_NUM - 1) * WINDOW_HEIGHT / TRACK_NUM + WINDOW_HEIGHT / (
-            2 * TRACK_NUM) - OBSTACLE_HEIGHT / 2, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
+    rect = pygame.Rect(WINDOW_WIDTH,10+ WINDOW_HEIGHT/2-(TRACK_NUM*TRACK_HEIGHT)/2+random.randint(0,TRACK_NUM-1)*TRACK_HEIGHT, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
     return {'rect': rect, 'image': obstacle_image}
 
 
-
+# 主函数，用于启动游戏
 def main():
-    global ball_x, ball_y, ball_dx, ball_dy
+    global ball_x, ball_y, ball_dx, ball_dy  # 声明全局变量
 
     obstacles = [create_obstacle()]
     knocked_back_obstacles = []
@@ -92,12 +93,10 @@ def main():
                     rect = obstacle['rect']
                     # 碰撞检测
                     if rect.colliderect(
-                            pygame.Rect(ball_x - BALL_RADIUS, WINDOW_HEIGHT / TRACK_NUM * (num - 1), BALL_DIAMETER * 2,
-                                        WINDOW_HEIGHT / 4)):
+                            pygame.Rect(ball_x - BALL_RADIUS, 10+WINDOW_HEIGHT/2-(TRACK_NUM*TRACK_HEIGHT)/2+TRACK_HEIGHT/2+TRACK_HEIGHT*(num-1), BALL_DIAMETER * 2,10)):
                         # 障碍物被撞飞
                         # pygame.mixer.music.play(0)
                         sound.playSoundScape(key)
-                        ball_x = WINDOW_WIDTH // 4
                         knocked_back_obstacles.append(
                             [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y, obstacle_hit_image])
                         obstacles.remove(obstacle)
@@ -131,7 +130,7 @@ def main():
         screen.blit(background_image, (0, 0))
 
         # 画线
-        pygame.draw.line(screen, WHITE, (ball_x, 0), (ball_x, WINDOW_HEIGHT), 2)
+        # pygame.draw.line(screen, WHITE, (ball_x, 0), (ball_x, WINDOW_HEIGHT), 2)
 
         # 画障碍物
         for obstacle in obstacles:
