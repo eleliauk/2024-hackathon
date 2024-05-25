@@ -71,26 +71,27 @@ obstacle_hit_image3 = pygame.image.load('img/dog_green_die.png').convert_alpha()
 obstacle_image3 = pygame.transform.scale(obstacle_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 obstacle_hit_image3 = pygame.transform.scale(obstacle_hit_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 
-#两个按键状态
-isKeyQ = False
-isKeyA = False
+# 两个按键状态
+isKey1 = False
+isKey2 = False
+isKey3 = False
 
 
 # 生成障碍物
 def create_obstacle():
-    rect = pygame.Rect(WINDOW_WIDTH,WINDOW_HEIGHT/2-TRACK_HEIGHT/2, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
+    rect = pygame.Rect(WINDOW_WIDTH, WINDOW_HEIGHT / 2 - TRACK_HEIGHT / 2, OBSTACLE_WIDTH, OBSTACLE_HEIGHT)
     note = random.randint(1, 3)
     if note == 1:
-        return {'rect': rect, 'image': obstacle_image1, 'note':note}
+        return {'rect': rect, 'image': obstacle_image1, 'note': note}
     elif note == 2:
-        return {'rect': rect, 'image': obstacle_image2, 'note':note}
+        return {'rect': rect, 'image': obstacle_image2, 'note': note}
     else:
-        return {'rect': rect, 'image': obstacle_image3, 'note':note}
+        return {'rect': rect, 'image': obstacle_image3, 'note': note}
 
 
 # 主函数，用于启动游戏
 def main():
-    global ball_x, ball_y, ball_dx, ball_dy,isKeyQ,isKeyA  # 声明全局变量
+    global ball_x, ball_y, ball_dx, ball_dy, isKey1, isKey2, isKey3  # 声明全局变量
 
     obstacles = [create_obstacle()]
     knocked_back_obstacles = []
@@ -105,46 +106,54 @@ def main():
                 pygame.quit()
                 sys.exit()
             elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_q:
-                    isKeyQ = True
-                elif event.key == pygame.K_a:
-                    isKeyA = True
+                if event.key == pygame.K_1:
+                    isKey1 = True
+                elif event.key == pygame.K_2:
+                    isKey2 = True
+                elif event.key == pygame.K_3:
+                    isKey3 = True
                 elif event.key == pygame.K_UP:
-                    if isKeyQ and not isKeyA:
+                    if isKey1 and not isKey2 and not isKey3:
                         # 移动障碍物
                         for obstacle in obstacles[:]:
                             if obstacle['note'] == 1:
                                 rect = obstacle['rect']
                                 # 碰撞检测
-                                if rect.colliderect(pygame.Rect(ball_x - BALL_RADIUS, 0, BALL_DIAMETER * 2, WINDOW_HEIGHT)):
+                                if rect.colliderect(
+                                        pygame.Rect(ball_x - BALL_RADIUS, 0, BALL_DIAMETER * 2, WINDOW_HEIGHT)):
                                     # 障碍物被撞飞
                                     knocked_back_obstacles.append(
-                                        [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y, obstacle_hit_image1])
+                                        [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y,
+                                         obstacle_hit_image1])
                                     obstacles.remove(obstacle)
                                     break
-                    elif isKeyA and not isKeyQ:
+                    elif isKey2 and not isKey1 and not isKey3:
                         # 移动障碍物
                         for obstacle in obstacles[:]:
                             if obstacle['note'] == 2:
                                 rect = obstacle['rect']
                                 # 碰撞检测
-                                if rect.colliderect(pygame.Rect(ball_x - BALL_RADIUS, 0, BALL_DIAMETER * 2, WINDOW_HEIGHT)):
+                                if rect.colliderect(
+                                        pygame.Rect(ball_x - BALL_RADIUS, 0, BALL_DIAMETER * 2, WINDOW_HEIGHT)):
                                     # 障碍物被撞飞
                                     knocked_back_obstacles.append(
-                                        [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y, obstacle_hit_image2])
+                                        [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y,
+                                         obstacle_hit_image2])
                                     obstacles.remove(obstacle)
                                     break
 
-                    else:
+                    elif isKey3 and not isKey2 and not isKey1:
                         # 移动障碍物
                         for obstacle in obstacles[:]:
                             if obstacle['note'] == 3:
                                 rect = obstacle['rect']
                                 # 碰撞检测
-                                if rect.colliderect(pygame.Rect(ball_x - BALL_RADIUS, 0, BALL_DIAMETER * 2, WINDOW_HEIGHT)):
+                                if rect.colliderect(
+                                        pygame.Rect(ball_x - BALL_RADIUS, 0, BALL_DIAMETER * 2, WINDOW_HEIGHT)):
                                     # 障碍物被撞飞
                                     knocked_back_obstacles.append(
-                                        [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y, obstacle_hit_image3])
+                                        [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y,
+                                         obstacle_hit_image3])
                                     obstacles.remove(obstacle)
                                     break
 
@@ -152,10 +161,12 @@ def main():
 
 
             elif event.type == pygame.KEYUP:
-                if event.key == pygame.K_q:
-                    isKeyQ = False
-                elif event.key == pygame.K_a:
-                    isKeyA = False
+                if event.key == pygame.K_1:
+                    isKey1 = False
+                elif event.key == pygame.K_2:
+                    isKey2 = False
+                elif event.key == pygame.K_3:
+                    isKey3 = False
 
         # 移动障碍物
         for obstacle in obstacles[:]:
