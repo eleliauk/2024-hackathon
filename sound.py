@@ -7,8 +7,9 @@ import os
 import pyaudio
 
 class sound:
-    p = pyaudio.PyAudio()
+    # p = pyaudio.PyAudio()
     pygame.mixer.init()
+    pygame.mixer.set_num_channels(64)
     pressDict = {i: False for i in range(36)}
     keyDict = {
         pygame.K_1: "c",
@@ -92,10 +93,10 @@ class sound:
 
         for fileName in filenames:
             if os.path.exists(fileName):
-                self.pressDict[fileName] = True
-                threading.Thread(target=self.play, args=(fileName, fileName)).start()
-                # sound1 = pygame.mixer.Sound(fileName)
-                # sound1.play()
+                # self.pressDict[fileName] = True
+                # threading.Thread(target=self.play, args=(fileName, fileName)).start()
+                sound1 = pygame.mixer.Sound(fileName)
+                sound1.play()
 
     def playSoundScape(self, key):
         fileName = "./audios/" + str(self.keyDict[key]) + ".wav"

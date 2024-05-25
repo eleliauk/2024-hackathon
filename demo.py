@@ -221,8 +221,21 @@ def main():
         # 清屏
         screen.blit(background_image, (0, 0))
 
-        # 画线
-        # pygame.draw.line(screen, WHITE, (ball_x, 0), (ball_x, WINDOW_HEIGHT), 2)
+        # 画按钮
+        if isKey1:
+            screen.blit(button1Down_image, (button1X, buttonY))
+        else:
+            screen.blit(button1Up_image, (button1X, buttonY))
+
+        if isKey2:
+            screen.blit(button2Down_image, (button2X, buttonY))
+        else:
+            screen.blit(button2Up_image, (button2X, buttonY))
+
+        if isKey3:
+            screen.blit(button3Down_image, (button3X, buttonY))
+        else:
+            screen.blit(button3Up_image, (button3X, buttonY))
 
         # 画障碍物
         for obstacle in obstacles:
