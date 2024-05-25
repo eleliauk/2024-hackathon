@@ -56,6 +56,7 @@ class sound:
         if os.path.exists(fileName):
             self.pressDict[key] = True
             threading.Thread(target=self.play, args=(fileName, key)).start()
+
     def play(self, path, key):
         CHUNK = 1024
         # 从目录中读取语音
@@ -85,43 +86,5 @@ class sound:
             data = wf.readframes(CHUNK)
             if not self.pressDict[key]:
                 break
-
-
-
-
-# pygame.init()
-# p = pyaudio.PyAudio()
-
-# screen = pygame.display.set_mode((500, 304))
-# pygame.display.set_caption('My-Piano')  # 设置窗口标题
-# pygame.display.update()  # 显示内容
-
-
-
-
-# while True:
-#     for event in pygame.event.get():
-#         if event.type == pygame.QUIT:
-#             pygame.quit()
-#         if event.type == pygame.KEYDOWN:
-#             key = event.key
-#             if (key == pygame.K_ESCAPE):
-#                 pygame.quit()
-#
-#             elif key in keyDict.keys():
-#                 fileName = "./audios/" + str(keyDict[key]) + ".wav"
-#                 if os.path.exists(fileName):
-#                     pressDict[key] = True
-#                     threading.Thread(target=play, args=(fileName, key)).start()
-#
-#
-#         elif event.type == pygame.KEYUP:
-#             # time.sleep(0.5)
-#             key = event.key
-#             pressDict[key] = False
-
-
-
-
 
 
