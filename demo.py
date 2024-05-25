@@ -91,16 +91,22 @@ button2Down_image = pygame.transform.scale(button2Down_image, (BUTTON_WIDTH, BUT
 button3Up_image = pygame.transform.scale(button3Up_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
 button3Down_image = pygame.transform.scale(button3Down_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
 
-button1X = 35+WINDOW_WIDTH/2 - BUTTON_WIDTH/2*4
-button2X = 35+WINDOW_WIDTH/2 - BUTTON_WIDTH/2
-button3X = 35+WINDOW_WIDTH/2 + BUTTON_WIDTH/2 * 2
-buttonY = WINDOW_HEIGHT/2+100
+button1X = 35 + WINDOW_WIDTH / 2 - BUTTON_WIDTH / 2 * 4
+button2X = 35 + WINDOW_WIDTH / 2 - BUTTON_WIDTH / 2
+button3X = 35 + WINDOW_WIDTH / 2 + BUTTON_WIDTH / 2 * 2
+buttonY = WINDOW_HEIGHT / 2 + 100
 
 # 两个按键状态
 isKey1 = False
 isKey2 = False
 isKey3 = False
 
+# 旋转的图片和固定图片
+rotating_image = pygame.image.load('img/bear-romate.png').convert_alpha()
+fixed_image = pygame.image.load('img/bear.png').convert_alpha()
+rotating_image = pygame.transform.scale(rotating_image, (100, 100))
+fixed_image = pygame.transform.scale(fixed_image, (200, 200))
+rotating_angle = 0  # 初始旋转角度
 
 
 # 生成障碍物
@@ -117,7 +123,7 @@ def create_obstacle():
 
 # 主函数，用于启动游戏
 def main():
-    global ball_x, ball_y, ball_dx, ball_dy, isKey1, isKey2, isKey3  # 声明全局变量
+    global ball_x, ball_y, ball_dx, ball_dy, isKey1, isKey2, isKey3, rotating_angle  # 声明全局变量
 
     obstacles = [create_obstacle()]
     knocked_back_obstacles = []
@@ -161,7 +167,6 @@ def main():
                                 # 碰撞检测
                                 if rect.colliderect(
                                         pygame.Rect(ball_x - BALL_RADIUS, 0, BALL_DIAMETER * 2, WINDOW_HEIGHT)):
-                                    # 障碍物被撞飞
                                     knocked_back_obstacles.append(
                                         [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y,
                                          obstacle_hit_image2])
@@ -169,7 +174,7 @@ def main():
                                     break
 
                     elif isKey3 and not isKey2 and not isKey1:
-                        # 移动障碍物
+
                         for obstacle in obstacles[:]:
                             if obstacle['note'] == 3:
                                 rect = obstacle['rect']
@@ -182,9 +187,6 @@ def main():
                                          obstacle_hit_image3])
                                     obstacles.remove(obstacle)
                                     break
-
-
-
 
             elif event.type == pygame.KEYUP:
                 if event.key == pygame.K_1:
@@ -250,13 +252,23 @@ def main():
             image = obstacle_data[3]
             screen.blit(image, rect)
 
-        # 更新屏幕
+        fixed_image_x = WINDOW_WIDTH // 4
+        fixed_image_y = WINDOW_HEIGHT // 1.5 - fixed_image.get_height() // 2
+        screen.blit(fixed_image, (fixed_image_x, fixed_image_y))
+
+        rotating_angle = (rotating_angle + 5) % 360
+        rotated_image = pygame.transform.rotate(rotating_image, rotating_angle)
+
+        rotated_center_x = fixed_image_x*1.1
+        rotated_center_y = fixed_image_y*1.2
+
+        rotated_rect = rotated_image.get_rect(center=(rotated_center_x, rotated_center_y))
+        screen.blit(rotated_image, rotated_rect.topleft)
+
         pygame.display.flip()
 
-        # 控制游戏刷新速度
         pygame.time.Clock().tick(60)
 
 
-# 确保可以直接运行 demo.py 作为主程序
 if __name__ == "__main__":
     main()

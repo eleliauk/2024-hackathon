@@ -1,5 +1,4 @@
 import subprocess
-
 import pygame
 import sys
 from utils import scale_background
