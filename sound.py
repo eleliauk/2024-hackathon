@@ -68,15 +68,34 @@ class sound:
 
     def playSoundScapebyName(self, pitch, town):
         s = self.keyDict2[pitch]
-        if town == 1:
+        filenames = []
+
+        if town == 0:
+            filenames.append("./audios/" + s + ".wav")
+        elif town == 1:
             if s[-1] == '#':
                 s = s[:-1] + '4#'
-        fileName = "./audios/" + s + ".wav"
-        if os.path.exists(fileName):
-            # self.pressDict[s] = True
-            # threading.Thread(target=self.play, args=(fileName, s)).start()
-            pygame.mixer.music.load(fileName)
-            pygame.mixer.music.play()
+                t = "./audios/" + s + ".wav"
+                filenames.append(t)
+            else:
+                t = "./audios/" + s + "4.wav"
+                filenames.append(t)
+        else:
+            filenames.append("./audios/" + s + ".wav")
+            if s[-1] == '#':
+                s = s[:-1] + '4#'
+                t = "./audios/" + s + ".wav"
+                filenames.append(t)
+            else:
+                t = "./audios/" + self.keyDict2[pitch] + "4.wav"
+                filenames.append(t)
+
+        for fileName in filenames:
+            if os.path.exists(fileName):
+                if town == 2:
+                    s = self.keyDict2[pitch]
+                pygame.mixer.music.load(fileName)
+                pygame.mixer.music.play()
 
     def playSoundScape(self, key):
         fileName = "./audios/" + str(self.keyDict[key]) + ".wav"
