@@ -1,3 +1,4 @@
+# main.py
 import pygame
 import sys
 from start_screen import StartScreen
@@ -16,7 +17,7 @@ def main():
     start_screen = StartScreen(screen)
 
     # 运行开始界面
-    start_screen.run()
+    start_screen.run()  # 修改为调用 run 方法
 
     # 退出pygame
     pygame.quit()

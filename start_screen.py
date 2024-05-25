@@ -1,3 +1,5 @@
+import subprocess
+
 import pygame
 import sys
 from utils import scale_background
@@ -42,10 +44,18 @@ class StartScreen:
         text_rect = font_text.get_rect(center=rect.center)
         self.screen.blit(font_text, text_rect)
 
+    def start_demo(self):
+        # 导入 demo 模块并调用其 main 函数
+        from demo import main
+        main()
+
     def handle_events(self):
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 self.is_running = False
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if self.button_rect.collidepoint(event.pos):
+                    self.start_demo()  # 调用开始demo的方法
 
     def run(self):
         while self.is_running:

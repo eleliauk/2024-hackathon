@@ -13,8 +13,7 @@ screen = pygame.display.set_mode((500, 304))
 pygame.display.set_caption('My-Piano')  # 设置窗口标题
 pygame.display.update()  # 显示内容
 
-pressDict = {i:False for i in range(36)}
-
+pressDict = {i: False for i in range(36)}
 
 keyDict = {
     pygame.K_1: "c",
@@ -87,8 +86,7 @@ def play(path, key):
         stream.write(data)
         data = wf.readframes(CHUNK)
         if not pressDict[key]:
-         	break
-
+            break
 
 
 while True:
@@ -111,8 +109,3 @@ while True:
             # time.sleep(0.5)
             key = event.key
             pressDict[key] = False
-
-
-
-
-

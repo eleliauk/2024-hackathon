@@ -14,10 +14,14 @@ BALL_RADIUS = BALL_DIAMETER // 2
 OBSTACLE_WIDTH = 20
 OBSTACLE_HEIGHT = 60
 OBSTACLE_SPEED = 2
+OBSTACLE_KNOCKBACK_SPEED_X = -5  # 障碍物被撞飞的水平速度
+OBSTACLE_KNOCKBACK_SPEED_Y = -10  # 障碍物被撞飞的初始垂直速度
+GRAVITY = 1  # 重力加速度
 
 # 颜色定义
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
+RED = (255, 0, 0)
 
 # 初始化 Pygame
 pygame.init()
@@ -29,12 +33,11 @@ pygame.display.set_caption('Avoid Obstacles')
 # 设置字体
 font = pygame.font.Font(None, 36)
 
-# 设置球的初始位置
+# 初始化球的位置和速度
 ball_x = WINDOW_WIDTH // 4
 ball_y = WINDOW_HEIGHT // 2
-
-# 设置球的速度
-ball_dy = 2
+ball_dx = 0
+ball_dy = 0
 
 
 # 生成障碍物
@@ -43,59 +46,98 @@ def create_obstacle():
                        OBSTACLE_HEIGHT)
 
 
-obstacles = [create_obstacle()]
+# 主函数，用于启动游戏
+def main():
+    global ball_x, ball_y, ball_dx, ball_dy  # 声明全局变量
 
-# 游戏主循环
-while True:
-    # 事件处理
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
+    obstacles = [create_obstacle()]
+    knocked_back_obstacles = []
 
-    # 获取键盘状态
-    keys = pygame.key.get_pressed()
-    if keys[pygame.K_UP]:
-        ball_y -= ball_dy
-    if keys[pygame.K_DOWN]:
+    # 游戏主循环
+    while True:
+        # 事件处理
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+
+        # 键盘控制球的移动
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_LEFT]:
+            ball_dx = -5
+        if keys[pygame.K_RIGHT]:
+            ball_dx = 5
+        if keys[pygame.K_UP]:
+            ball_dy = -5
+        if keys[pygame.K_DOWN]:
+            ball_dy = 5
+
+        # 停止球的移动
+        if not keys[pygame.K_LEFT] and not keys[pygame.K_RIGHT]:
+            ball_dx = 0
+        if not keys[pygame.K_UP] and not keys[pygame.K_DOWN]:
+            ball_dy = 0
+
+        # 更新球的位置
+        ball_x += ball_dx
         ball_y += ball_dy
 
-    # 限制球不出界
-    ball_y = min(max(ball_y, BALL_RADIUS), WINDOW_HEIGHT - BALL_RADIUS)
+        # 限制球不出界
+        ball_x = max(BALL_RADIUS, min(ball_x, WINDOW_WIDTH - BALL_RADIUS))
+        ball_y = max(BALL_RADIUS, min(ball_y, WINDOW_HEIGHT - BALL_RADIUS))
 
-    # 移动障碍物
-    for obstacle in obstacles:
-        obstacle.x -= OBSTACLE_SPEED
+        # 移动障碍物
+        for obstacle in obstacles[:]:
+            obstacle.x -= OBSTACLE_SPEED
 
-    # 移除已通过的障碍物
-    obstacles = [obstacle for obstacle in obstacles if obstacle.x + OBSTACLE_WIDTH > 0]
+            # 移除已通过的障碍物
+            if obstacle.x + OBSTACLE_WIDTH < 0:
+                obstacles.remove(obstacle)
 
-    # 生成新障碍物
-    if not obstacles or obstacles[-1].x < WINDOW_WIDTH - 200:
-        obstacles.append(create_obstacle())
+            # 碰撞检测
+            if obstacle.colliderect(
+                    pygame.Rect(ball_x - BALL_RADIUS, ball_y - BALL_RADIUS, BALL_DIAMETER, BALL_DIAMETER)):
+                # 障碍物被撞飞
+                knocked_back_obstacles.append([obstacle, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y])
+                obstacles.remove(obstacle)
 
-    # 碰撞检测
-    for obstacle in obstacles:
-        if obstacle.colliderect(pygame.Rect(ball_x - BALL_RADIUS, ball_y - BALL_RADIUS, BALL_DIAMETER, BALL_DIAMETER)):
-            text = font.render("Game Over", True, WHITE)
-            screen.blit(text, (WINDOW_WIDTH // 2 - text.get_width() // 2, WINDOW_HEIGHT // 2 - text.get_height() // 2))
-            pygame.display.flip()
-            pygame.time.wait(2000)
-            pygame.quit()
-            sys.exit()
+        # 处理被撞飞的障碍物
+        for obstacle_data in knocked_back_obstacles[:]:
+            obstacle, knockback_x, knockback_y = obstacle_data
+            obstacle.x += knockback_x
+            obstacle.y += knockback_y
+            obstacle_data[2] += GRAVITY  # 更新垂直速度
 
-    # 清屏
-    screen.fill(BLACK)
+            # 如果障碍物离开屏幕，则移除
+            if (obstacle.x + OBSTACLE_WIDTH < 0 or obstacle.y > WINDOW_HEIGHT):
+                knocked_back_obstacles.remove(obstacle_data)
 
-    # 画球
-    pygame.draw.circle(screen, WHITE, (ball_x, ball_y), BALL_RADIUS)
+        # 生成新障碍物
+        if random.randint(1, 60) == 1:  # 每隔一段时间生成一个新的障碍物
+            obstacles.append(create_obstacle())
 
-    # 画障碍物
-    for obstacle in obstacles:
-        pygame.draw.rect(screen, WHITE, obstacle)
+        # 清屏
+        screen.fill(BLACK)
 
-    # 更新屏幕
-    pygame.display.flip()
+        # 画球
+        pygame.draw.circle(screen, WHITE, (ball_x, ball_y), BALL_RADIUS)
 
-    # 延时
-    pygame.time.wait(10)
+        # 画障碍物
+        for obstacle in obstacles:
+            pygame.draw.rect(screen, RED, obstacle)
+
+        # 画被撞飞的障碍物
+        for obstacle_data in knocked_back_obstacles:
+            obstacle = obstacle_data[0]
+            pygame.draw.rect(screen, RED, obstacle)
+
+        # 更新屏幕
+        pygame.display.flip()
+
+        # 控制游戏刷新速度
+        pygame.time.Clock().tick(60)
+
+
+# 确保可以直接运行 demo.py 作为主程序
+if __name__ == "__main__":
+    main()
