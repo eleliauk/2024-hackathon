@@ -54,7 +54,7 @@ class StartScreen:
                 self.is_running = False
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if self.button_rect.collidepoint(event.pos):
-                    self.start_demo()  # 调用开始demo的方法
+                    self.start_demo()
 
     def run(self):
         while self.is_running:
