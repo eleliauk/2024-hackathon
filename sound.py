@@ -1,4 +1,4 @@
-import pyaudio
+# import pyaudio
 import wave
 import threading
 import pygame
@@ -7,7 +7,8 @@ import os
 
 
 class sound:
-    p = pyaudio.PyAudio()
+    # p = pyaudio.PyAudio()
+    pygame.mixer.init()
     pressDict = {i: False for i in range(36)}
     keyDict = {
         pygame.K_1: "c",
@@ -72,44 +73,51 @@ class sound:
                 s = s[:-1] + '4#'
         fileName = "./audios/" + s + ".wav"
         if os.path.exists(fileName):
-            self.pressDict[s] = True
-            threading.Thread(target=self.play, args=(fileName, s)).start()
+            # self.pressDict[s] = True
+            # threading.Thread(target=self.play, args=(fileName, s)).start()
+            pygame.mixer.music.load(fileName)
+            pygame.mixer.music.play()
 
     def playSoundScape(self, key):
         fileName = "./audios/" + str(self.keyDict[key]) + ".wav"
         if os.path.exists(fileName):
-            self.pressDict[key] = True
-            threading.Thread(target=self.play, args=(fileName, key)).start()
+            # self.pressDict[key] = True
+            # threading.Thread(target=self.play, args=(fileName, key)).start()
+            pygame.mixer.music.load(fileName)
+            pygame.mixer.music.play()
 
-    def play(self, path, key):
-        CHUNK = 1024
-        # 从目录中读取语音
-        wf = wave.open(path, 'rb')
-        # read data
-        data = wf.readframes(CHUNK)
-        # 创建播放器
-        p = self.p
+    def stop(self):
+        pygame.mixer.music.stop()
 
-        # 获得语音文件的各个参数
-        FORMAT = p.get_format_from_width(wf.getsampwidth())
-        CHANNELS = wf.getnchannels()
-        RATE = wf.getframerate()
-        # print(self.keyDict[key], end=' ')
-        sys.stdout.flush()
-        # 打开音频流， output=True表示音频输出
-
-        stream = p.open(format=FORMAT,
-                        channels=CHANNELS,
-                        rate=RATE,
-                        frames_per_buffer=CHUNK,
-                        output=True,
-                        )
-        # play stream (3) 按照1024的块读取音频数据到音频流，并播放
-        while len(data) > 0:
-            stream.write(data)
-            data = wf.readframes(CHUNK)
-            if not self.pressDict[key]:
-                break
+    # def play(self, path, key):
+    #     CHUNK = 1024
+    #     # 从目录中读取语音
+    #     wf = wave.open(path, 'rb')
+    #     # read data
+    #     data = wf.readframes(CHUNK)
+    #     # 创建播放器
+    #     p = self.p
+    #
+    #     # 获得语音文件的各个参数
+    #     FORMAT = p.get_format_from_width(wf.getsampwidth())
+    #     CHANNELS = wf.getnchannels()
+    #     RATE = wf.getframerate()
+    #     # print(self.keyDict[key], end=' ')
+    #     sys.stdout.flush()
+    #     # 打开音频流， output=True表示音频输出
+    #
+    #     stream = p.open(format=FORMAT,
+    #                     channels=CHANNELS,
+    #                     rate=RATE,
+    #                     frames_per_buffer=CHUNK,
+    #                     output=True,
+    #                     )
+    #     # play stream (3) 按照1024的块读取音频数据到音频流，并播放
+    #     while len(data) > 0:
+    #         stream.write(data)
+    #         data = wf.readframes(CHUNK)
+    #         if not self.pressDict[key]:
+    #             break
 
 # pygame.init()
 # p = pyaudio.PyAudio()

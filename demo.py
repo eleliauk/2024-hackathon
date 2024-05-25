@@ -97,8 +97,7 @@ def main():
                         # 障碍物被撞飞
                         # pygame.mixer.music.play(0)
                         sound.playSoundScape(key)
-                        knocked_back_obstacles.append(
-                            [rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y, obstacle_hit_image])
+                        knocked_back_obstacles.append([rect, OBSTACLE_KNOCKBACK_SPEED_X, OBSTACLE_KNOCKBACK_SPEED_Y, obstacle_hit_image])
                         obstacles.remove(obstacle)
                         break
 
