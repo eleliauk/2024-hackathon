@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import sound
 
 # 设置窗口的大小
 WINDOW_WIDTH = 600
@@ -36,6 +37,8 @@ ball_y = WINDOW_HEIGHT // 2
 # 设置球的速度
 ball_dy = 2
 
+# sound设置
+sound = sound.sound()
 
 # 生成障碍物
 def create_obstacle():
@@ -52,6 +55,11 @@ while True:
         if event.type == pygame.QUIT:
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            key = event.key
+            if key in sound.keyDict:
+                sound.playSoundScape(key)
+
 
     # 获取键盘状态
     keys = pygame.key.get_pressed()
