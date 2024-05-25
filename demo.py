@@ -56,13 +56,13 @@ ball_dx = 0
 ball_dy = 0
 
 # 加载障碍物图片
-obstacle_image1 = pygame.image.load('img/dog_blue.png').convert_alpha()
-obstacle_hit_image1 = pygame.image.load('img/dog_blue_die.png').convert_alpha()
+obstacle_image1 = pygame.image.load('img/dog_red.png').convert_alpha()
+obstacle_hit_image1 = pygame.image.load('img/dog_red_die.png').convert_alpha()
 obstacle_image1 = pygame.transform.scale(obstacle_image1, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 obstacle_hit_image1 = pygame.transform.scale(obstacle_hit_image1, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 
-obstacle_image2 = pygame.image.load('img/dog_red.png').convert_alpha()
-obstacle_hit_image2 = pygame.image.load('img/dog_red_die.png').convert_alpha()
+obstacle_image2 = pygame.image.load('img/dog_blue.png').convert_alpha()
+obstacle_hit_image2 = pygame.image.load('img/dog_blue_die.png').convert_alpha()
 obstacle_image2 = pygame.transform.scale(obstacle_image2, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 obstacle_hit_image2 = pygame.transform.scale(obstacle_hit_image2, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 
@@ -71,10 +71,36 @@ obstacle_hit_image3 = pygame.image.load('img/dog_green_die.png').convert_alpha()
 obstacle_image3 = pygame.transform.scale(obstacle_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 obstacle_hit_image3 = pygame.transform.scale(obstacle_hit_image3, (OBSTACLE_WIDTH, OBSTACLE_HEIGHT))
 
+# 加载提示按钮图片
+button1Up_image = pygame.image.load('img/button1_up.png').convert_alpha()
+button1Down_image = pygame.image.load('img/button1_down.png').convert_alpha()
+button2Up_image = pygame.image.load('img/button2_up.png').convert_alpha()
+button2Down_image = pygame.image.load('img/button2_down.png').convert_alpha()
+button3Up_image = pygame.image.load('img/button3_up.png').convert_alpha()
+button3Down_image = pygame.image.load('img/button3_down.png').convert_alpha()
+
+# 加载提示按钮的大小
+BUTTON_WIDTH = 50
+BUTTON_HEIGHT = 80
+
+# 加载提示按钮图片
+button1Up_image = pygame.transform.scale(button1Up_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+button1Down_image = pygame.transform.scale(button1Down_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+button2Up_image = pygame.transform.scale(button2Up_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+button2Down_image = pygame.transform.scale(button2Down_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+button3Up_image = pygame.transform.scale(button3Up_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+button3Down_image = pygame.transform.scale(button3Down_image, (BUTTON_WIDTH, BUTTON_HEIGHT))
+
+button1X = 35+WINDOW_WIDTH/2 - BUTTON_WIDTH/2*4
+button2X = 35+WINDOW_WIDTH/2 - BUTTON_WIDTH/2
+button3X = 35+WINDOW_WIDTH/2 + BUTTON_WIDTH/2 * 2
+buttonY = WINDOW_HEIGHT/2+100
+
 # 两个按键状态
 isKey1 = False
 isKey2 = False
 isKey3 = False
+
 
 
 # 生成障碍物
@@ -201,6 +227,22 @@ def main():
         # 画障碍物
         for obstacle in obstacles:
             screen.blit(obstacle['image'], obstacle['rect'])
+
+        # 画提示按钮
+        if isKey1:
+            screen.blit(button1Down_image, (button1X, buttonY))
+        elif not isKey1:
+            screen.blit(button1Up_image, (button1X, buttonY))
+
+        if isKey2:
+            screen.blit(button2Down_image, (button2X, buttonY))
+        elif not isKey2:
+            screen.blit(button2Up_image, (button2X, buttonY))
+
+        if isKey3:
+            screen.blit(button3Down_image, (button3X, buttonY))
+        elif not isKey3:
+            screen.blit(button3Up_image, (button3X, buttonY))
 
         # 画被撞飞的障碍物
         for obstacle_data in knocked_back_obstacles:
